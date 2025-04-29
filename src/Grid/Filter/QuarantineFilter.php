@@ -13,10 +13,11 @@ declare(strict_types=1);
 
 namespace MonsieurBiz\SyliusAntiSpamPlugin\Grid\Filter;
 
+use MonsieurBiz\SyliusAntiSpamPlugin\Form\Type\Filter\QuarantineFilterType;
 use Sylius\Component\Grid\Data\DataSourceInterface;
-use Sylius\Component\Grid\Filtering\FilterInterface;
+use Sylius\Component\Grid\Filtering\ConfigurableFilterInterface;
 
-final class QuarantineFilter implements FilterInterface
+final class QuarantineFilter implements ConfigurableFilterInterface
 {
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameters)
@@ -35,5 +36,15 @@ final class QuarantineFilter implements FilterInterface
             $dataSource->getExpressionBuilder()->isNull('quarantineItem.liftedAt'),
         ];
         $dataSource->restrict($dataSource->getExpressionBuilder()->andX(...$expressions));
+    }
+
+    public static function getFormType(): string
+    {
+        return QuarantineFilterType::class;
+    }
+
+    public static function getType(): string
+    {
+        return 'quarantine';
     }
 }
