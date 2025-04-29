@@ -1,4 +1,4 @@
-<div class="ui center aligned">
+<div class="text-center">
 {% if data is not null and data.isQuarantined() %}
     {%- set popup_content -%}
         <h5>{{ "monsieurbiz_anti_spam.ui.the_reasons"|trans }}</h5>
@@ -12,26 +12,28 @@
         </div>
     {%- endset -%}
     {% if data.isQuarantined(constant('MonsieurBiz\\SyliusAntiSpamPlugin\\Entity\\QuarantineItemInterface::LEVEL_PROVEN')) %}
-    <span class="ui red label js-quarantine-details" data-variation="wide" data-html="{{ popup_content|e('html_attr') }}">
-        <i class="ban icon"></i>
-        {{ "monsieurbiz_anti_spam.ui.proven"|trans }}
-    </span>
+        <div class="text-red mb-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ popup_content|e('html_attr') }}">
+            {{ ux_icon('tabler:ban', { class: 'icon' }) }}
+            {{ "monsieurbiz_anti_spam.ui.proven"|trans }}
+        </div>
     {% elseif data.isQuarantined(constant('MonsieurBiz\\SyliusAntiSpamPlugin\\Entity\\QuarantineItemInterface::LEVEL_LIKELY')) %}
-    <span class="ui orange label js-quarantine-details" data-variation="wide" data-html="{{ popup_content|e('html_attr') }}">
-        <i class="ban icon"></i>
-        {{ "monsieurbiz_anti_spam.ui.likely"|trans }}
-    </span>
+        <div class="text-orange mb-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ popup_content|e('html_attr') }}">
+            {{ ux_icon('tabler:ban', { class: 'icon' }) }}
+            {{ "monsieurbiz_anti_spam.ui.likely"|trans }}
+        </div>
     {% elseif data.isQuarantined(constant('MonsieurBiz\\SyliusAntiSpamPlugin\\Entity\\QuarantineItemInterface::LEVEL_SUSPECTED')) %}
-    <span class="ui yellow label js-quarantine-details" data-variation="wide" data-html="{{ popup_content|e('html_attr') }}">
-        <i class="ban icon"></i>
-        {{ "monsieurbiz_anti_spam.ui.suspected"|trans }}
-    </span>
+        <div class="text-yellow mb-2" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="{{ popup_content|e('html_attr') }}">
+            {{ ux_icon('tabler:ban', { class: 'icon' }) }}
+            {{ "monsieurbiz_anti_spam.ui.suspected"|trans }}
+        </div>
     {% endif %}
-    {% include '@MonsieurBizSyliusAntiSpamPlugin/Admin/Grid/Action/_update_quarantine_button.html.twig' with { 'options': {'size': 'small', 'form_style': 'display: inline-block', 'without_label': true} } %}
+    {{ include('@MonsieurBizSyliusAntiSpamPlugin/Admin/Grid/Action/_update_quarantine_button.html.twig', {
+        'options': {'without_label': true}
+    }) }}
 {% else %}
-    <span class="ui green label">
-        <i class="check circle outline icon"></i>
-        {{ "monsieurbiz_anti_spam.ui.ok"|trans }}
-    </span>
+    <div class="text-green">
+        {{ ux_icon('tabler:check', {'class': 'icon'}) }}
+        {{ 'monsieurbiz_anti_spam.ui.ok'|trans }}
+    </div>
 {% endif %}
 </div>
