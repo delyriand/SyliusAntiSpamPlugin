@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace MonsieurBiz\SyliusAntiSpamPlugin\Validator;
 
+use Karser\Recaptcha3Bundle\ReCaptcha\Response as RecaptchaResponse;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3Validator as Recaptcha3ValidatorConstraints;
-use ReCaptcha\Response as RecaptchaResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 final class ReCaptcha3Validator implements ValidatorInterface
