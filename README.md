@@ -25,21 +25,95 @@ If you want to use our recipes, you can configure your composer.json by running:
 composer config --no-plugins --json extra.symfony.endpoint '["https://api.github.com/repos/monsieurbiz/symfony-recipes/contents/index.json?ref=flex/master","flex://defaults"]'
 ```
 
-⚙️ To Be Defined.
+```bash
+composer require monsieurbiz/sylius-anti-spam-plugin
+```
 
-<!--
-1. Use the trait `\MonsieurBiz\SyliusAntiSpamPlugin\Entity\CustomerQuarantineItemAwareTrait` in your Customer entity. 
+<details>
+<summary>For the installation without flex, follow these additional steps</summary>
+<p>
 
-2. Update your env vars with your Recaptcha site key and secret : 
+Change your `config/bundles.php` file to add the line for the plugin :
 
-RECAPTCHA3_KEY=my_site_key
-RECAPTCHA3_SECRET=my_secret
+```php
+<?php
 
--->
+return [
+    //..
+    MonsieurBiz\SyliusRichEditorPlugin\MonsieurBizSyliusAntiSpamPlugin::class => ['all' => true],
+];
+```
+
+Then create the config file in `config/packages/monsieurbiz_sylius_anti_spam_plugin.yaml` :
+
+```yaml
+imports:
+    - { resource: "@MonsieurBizSyliusAntiSpamPlugin/Resources/config/config.yaml" }
+
+services:
+    # Add the "monsieurbiz_anti_spam.quarantineable" tag on the quarantineable entity (not autoconfigure the entity…)
+    App\Entity\Customer\Customer:
+        tags: ['monsieurbiz_anti_spam.quarantineable']
+```
+
+Finally import the routes in `config/routes/monsieurbiz_sylius_anti_spam_plugin.yaml` :
+
+```yaml
+monsieurbiz_sylius_anti_spam_admin:
+    resource: "@MonsieurBizSyliusAntiSpamPlugin/Resources/config/routes/admin.yaml"
+    prefix: /%sylius_admin.path_name%
+```
+</p>
+</details>
+
+**Update customer entity**
+
+Your `Customer` entity should implement `MonsieurBiz\SyliusAntiSpamPlugin\Entity\QuarantineItemAwareInterface` and use the `MonsieurBiz\SyliusAntiSpamPlugin\Entity\QuarantineItemAwareTrait` trait.
+
+```diff
+namespace App\Entity\Customer;
+
+use Doctrine\ORM\Mapping as ORM;
++ use MonsieurBiz\SyliusAntiSpamPlugin\Entity\QuarantineItemAwareInterface;
++ use MonsieurBiz\SyliusAntiSpamPlugin\Entity\QuarantineItemAwareTrait;
+use Sylius\Component\Core\Model\Customer as BaseCustomer;
+
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_customer')]
+- class Customer extends BaseCustomer
++ class Customer extends BaseCustomer implements QuarantineItemAwareInterface
+{
++     use QuarantineItemAwareTrait
+}
+```
+
+**Update your database schema**
+
+Update your database schema with the plugin migrations:
+
+```bash
+bin/console doctrine:migrations:migrate
+```
+
+Generate the migration and update your database schema with the new customer entity field:
+
+```bash
+bin/console doctrine:migrations:diff
+bin/console doctrine:migrations:migrate
+```
 
 ## Documentation
 
-⚙️ To Be Completed.
+### Use reCAPTCHA for register and contact form
+
+Create or get your reCAPTCHA key and secret [here](https://www.google.com/recaptcha/admin/create).
+
+Add your site key and secret to your .env file:
+
+```dotenv
+RECAPTCHA3_KEY=my_site_key
+RECAPTCHA3_SECRET=my_secret
+```
 
 ### Remove automatically quarantine entities (experimental)
 
