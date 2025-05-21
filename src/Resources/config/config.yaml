@@ -1,5 +1,5 @@
 imports:
     - { resource: 'app/doctrine_migrations.yaml' }
     - { resource: 'sylius/resource.yaml' }
-    - { resource: 'sylius/ui.yaml' }
+    - { resource: 'sylius/twig_hooks.yaml' }
     - { resource: 'sylius/grid.yaml' }

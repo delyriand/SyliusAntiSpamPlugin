@@ -1,19 +1,34 @@
 {% if data.isQuarantined() %}
     {% set path = path(options.link.route|default('monsieurbiz_sylius_anti_spam_admin_update_quarantine'), {'quarantineId': data.id}) %}
 
-    <form action="{{ path }}" method="POST" name="monsieurbiz_anti_spam_update_quarantine" style="{{ options.form_style|default('') }}">
-        <input type="hidden" name="_method" value="PUT">
-        <input type="hidden" name="monsieurbiz_anti_spam_update_quarantine[_token]" value="{{ csrf_token('monsieurbiz_anti_spam_update_quarantine') }}" />
-        <input type="hidden" name="monsieurbiz_anti_spam_update_quarantine[level]" value="{{ options.level|default(constant('MonsieurBiz\\SyliusAntiSpamPlugin\\Entity\\QuarantineItemInterface::LEVEL_LIFTED')) }}" />
+    {% set modal_id = 'modal-update-quarantine-' ~ data.id %}
+    {% component 'sylius_admin:confirmation_modal' with {modal_id: modal_id, type: 'update-quarantine'} %}
+        {% import '@SyliusAdmin/shared/helper/button.html.twig' as button %}
 
-        <button
-            class="ui{% if not options.without_label|default(false) %} labeled{% endif%} icon button {{ options.size|default('') }}"
-            type="submit"
-            data-requires-confirmation
-            {% if options.without_label|default(false) %}data-tooltip="{{ action.label|default('monsieurbiz_anti_spam.ui.lift_quarantine')|trans }}"{% endif %}
-        >
-            <i class="{{ action.icon|default('lock open') }} icon"></i>
-            {% if not options.without_label|default(false) %}{{ action.label|default('monsieurbiz_anti_spam.ui.lift_quarantine')|trans }}{% endif %}
-        </button>
-    </form>
+        {% block trigger %}
+            <div {% if options.without_label|default(false) %}data-bs-toggle="tooltip" data-bs-title="{{ action.label|default('monsieurbiz_anti_spam.ui.lift_quarantine')|trans }}"{% endif %}>
+                {% set btn_class = options.btn_class|default('btn') %}
+                {% set btn_class = btn_class ~ ' ' ~ (options.without_label|default(false) ? 'btn-icon' : '') %}
+                <button
+                    class="{{ btn_class }}"
+                    type="button"
+                    data-bs-toggle="modal" data-bs-target="#{{ modal_id }}"
+                >
+                    {{ ux_icon(action.icon|default('tabler:lock-open-2')) }}
+                    {% if not options.without_label|default(false) %}{{ action.label|default('monsieurbiz_anti_spam.ui.lift_quarantine')|trans }}{% endif %}
+                </button>
+            </div>
+        {% endblock %}
+
+        {% block footer %}
+            <form action="{{ path }}" method="POST" name="monsieurbiz_anti_spam_update_quarantine">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" name="monsieurbiz_anti_spam_update_quarantine[_token]" value="{{ csrf_token('monsieurbiz_anti_spam_update_quarantine') }}" />
+                <input type="hidden" name="monsieurbiz_anti_spam_update_quarantine[level]" value="{{ options.level|default(constant('MonsieurBiz\\SyliusAntiSpamPlugin\\Entity\\QuarantineItemInterface::LEVEL_LIFTED')) }}" />
+
+                {{ button.default({ text: 'sylius.ui.cancel'|trans, attr: 'data-bs-dismiss=modal' }) }}
+                {{ button.default({ text: action.label|default('monsieurbiz_anti_spam.ui.lift_quarantine')|trans, type: 'submit', class: 'btn-primary' }) }}
+            </form>
+        {% endblock %}
+    {% endcomponent %}
 {% endif %}

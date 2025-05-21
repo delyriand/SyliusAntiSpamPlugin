@@ -56,10 +56,3 @@ services:
             $routesToCheck: '%monsieurbiz.anti_spam.recaptcha_validator.routes_to_check%'
             $captchaMinimumScore: '%karser_recaptcha3.score_threshold%'
 
-    MonsieurBiz\SyliusAntiSpamPlugin\Grid\Filter\QuarantineFilter:
-        autoconfigure: false
-        tags:
-            -   name: sylius.grid_filter
-                type: quarantine
-                form_type: MonsieurBiz\SyliusAntiSpamPlugin\Form\Type\Filter\QuarantineFilterType
-

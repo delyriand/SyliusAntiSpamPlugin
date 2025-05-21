@@ -1,6 +1,6 @@
 monsieurbiz_anti_spam:
     form_captcha:
-        message: Ce site est protégé par reCAPTCHA et la <a href="%privacy_link%" target="_blank" rel="noopener noreferer">politique de confidentialité</a> et les <a href="%terms_link%" target="_blank" rel="noopener noreferer">conditions d'utilisation</a> de Google s'appliquent.
+        message: Ce site est protégé par reCAPTCHA et la <a class="alert-link fw-normal" href="%privacy_link%" target="_blank" rel="noopener noreferer">politique de confidentialité</a> et les <a class="alert-link fw-normal" href="%terms_link%" target="_blank" rel="noopener noreferer">conditions d'utilisation</a> de Google s'appliquent.
     ui:
         quarantine: Quarantaine
         ok: OK
